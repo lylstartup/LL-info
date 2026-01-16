@@ -9,30 +9,47 @@ const Countdown = () => {
   const targetDate = new Date("2028-01-12T00:00:00").getTime();
 
   const calculateTimeLeft = (): TimeUnit[] => {
-    const now = new Date().getTime();
-    const difference = targetDate - now;
+  const now = new Date();
+  const target = new Date("2028-01-12T00:00:00");
 
-    if (difference <= 0) {
-      return [
-        { value: 0, label: "Años" },
-        { value: 0, label: "Meses" },
-        { value: 0, label: "Días" },
-        { value: 0, label: "Horas" },
-      ];
-    }
-
-    const years = Math.floor(difference / (1000 * 60 * 60 * 24 * 365));
-    const months = Math.floor((difference % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
-    const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
+  if (now >= target) {
     return [
-      { value: years, label: "Años" },
-      { value: months, label: "Meses" },
-      { value: days, label: "Días" },
-      { value: hours, label: "Horas" },
+      { value: 0, label: "Años" },
+      { value: 0, label: "Meses" },
+      { value: 0, label: "Días" },
+      { value: 0, label: "Horas" },
     ];
-  };
+  }
+
+  let years = target.getFullYear() - now.getFullYear();
+  let months = target.getMonth() - now.getMonth();
+  let days = target.getDate() - now.getDate();
+  let hours = target.getHours() - now.getHours();
+
+  if (hours < 0) {
+    hours += 24;
+    days--;
+  }
+
+  if (days < 0) {
+    const previousMonth = new Date(target.getFullYear(), target.getMonth(), 0);
+    days += previousMonth.getDate();
+    months--;
+  }
+
+  if (months < 0) {
+    months += 12;
+    years--;
+  }
+
+  return [
+    { value: years, label: "Años" },
+    { value: months, label: "Meses" },
+    { value: days, label: "Días" },
+    { value: hours, label: "Horas" },
+  ];
+};
+
 
   const [timeLeft, setTimeLeft] = useState<TimeUnit[]>(calculateTimeLeft());
 
