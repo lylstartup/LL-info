@@ -1,3 +1,7 @@
+import emailjs from "@emailjs/browser";
+import { Link as LinkIcon } from "lucide-react";
+import logo from "@/assets/logo.jpeg";
+import { Textarea } from "@/components/ui/textarea";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, Mail } from "lucide-react";
@@ -24,6 +28,8 @@ const navItems = [
   { label: "Plan", path: "/plan" },
 ];
 
+const siteUrl = "https://tusitio.com";
+
 const masItems = [
   { label: "Avances", path: "/avances" },
   { label: "Objetivos", path: "/objetivos" },
@@ -34,9 +40,40 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [comment, setComment] = useState("");
+  const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmitInterest = () => {
+  const handleShareSite = async () => {
+    try {
+      await navigator.clipboard.writeText(siteUrl);
+
+      if (navigator.share) {
+        await navigator.share({
+          title: "L&L – Ecosistema Fintech",
+          text: "Mirá este proyecto fintech en desarrollo",
+          url: siteUrl,
+        });
+      } else {
+        // 👇 Solo mostramos el mensaje si NO hay share sheet
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+
+      toast({
+        title: "Link copiado",
+        description: "El enlace fue copiado al portapapeles.",
+      });
+    } catch (error) {
+      toast({
+        title: "No se pudo copiar",
+        description: "Copiá el link manualmente.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleSubmitInterest = async () => {
     if (!email.trim()) {
       toast({
         title: "Email requerido",
@@ -45,12 +82,44 @@ const Header = () => {
       });
       return;
     }
-    toast({
-      title: "¡Gracias por tu interés!",
-      description: "Te contactaremos pronto.",
-    });
-    setEmail("");
-    setSheetOpen(false);
+
+    const mailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!mailRegex.test(email)) {
+      toast({
+        title: "Email incorrecto",
+        description: "Ingresá un email válido.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          user_email: email,
+          user_comment: comment || "Sin comentario",
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+
+      toast({
+        title: "¡Gracias por tu interés!",
+        description: "Te contactaremos pronto.",
+      });
+
+      setEmail("");
+      setComment("");
+      setSheetOpen(false);
+    } catch (error) {
+      toast({
+        title: "Error al enviar",
+        description: "Intentá nuevamente más tarde.",
+        variant: "destructive",
+      });
+      console.error("EmailJS error:", error);
+    }
   };
 
   const isInMasSection = masItems.some((item) => location.pathname === item.path);
@@ -62,10 +131,15 @@ const Header = () => {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/30 group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)] transition-all duration-300">
-                <span className="font-display font-bold text-primary text-lg">F</span>
+              <div className="w-10 h-10 rounded-xl overflow-hidden bg-primary/20 flex items-center justify-center border border-primary/30 group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)] transition-all duration-300">
+                <img
+                  src={logo}
+                  alt="L&L"
+                  
+                  className="object-contain"
+                />
               </div>
-              <span className="font-display font-semibold text-lg text-foreground">FinEco</span>
+              <span className="font-display font-semibold text-lg text-foreground">L&L</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -196,12 +270,50 @@ const Header = () => {
                 />
               </div>
             </div>
+            <div className="space-y-2">
+              <label htmlFor="comment" className="text-sm font-medium text-foreground">
+                Comentario (opcional)
+              </label>
+              <Textarea
+                id="comment"
+                placeholder="Comentanos qué te parece la idea..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className="resize-none"
+              />
+            </div>
             <Button variant="glow" className="w-full" onClick={handleSubmitInterest}>
               Quiero ser parte
             </Button>
             <p className="text-xs text-muted-foreground text-center">
               No compartiremos tu información con terceros.
             </p>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">
+                Comparte el sitio con personas interesadas!
+              </label>
+              <div className="flex gap-2">
+                <Input
+                  value={siteUrl}
+                  readOnly
+                  className="cursor-default"
+                />
+                <div className="relative">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={handleShareSite}
+                    title="Copiar y compartir"
+                  >
+                    <LinkIcon className="h-4 w-4" />
+                  </Button>
+
+                  
+                </div>
+              </div>
+            </div>
           </div>
         </SheetContent>
       </Sheet>

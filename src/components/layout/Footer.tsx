@@ -1,3 +1,6 @@
+import { Instagram } from "lucide-react";
+import { Mail } from "lucide-react";
+import logo from "@/assets/logo.jpeg";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -8,27 +11,57 @@ const Footer = () => {
           {/* Logo & Description */}
           <div className="md:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/30">
-                <span className="font-display font-bold text-primary text-lg">F</span>
+              <div className="w-10 h- rounded-xl overflow-hidden bg-primary/20 flex items-center justify-center border border-primary/30">
+                <img
+                  src={logo}
+                  alt="L&L"
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                />
               </div>
-              <span className="font-display font-semibold text-lg text-foreground">FinEco</span>
+              <span className="font-display font-semibold text-lg text-foreground">L&L</span>
             </Link>
             <p className="text-muted-foreground text-sm max-w-md leading-relaxed">
-              Ecosistema fintech en desarrollo. Construyendo el futuro de las finanzas personales 
+              Ecosistema fintech en desarrollo. Construyendo el futuro de las inversiones 
               con tecnología, educación e inteligencia artificial.
             </p>
           </div>
 
           {/* Sumate */}
           <div>
-            <h4 className="font-display font-semibold text-foreground mb-4">Sumate</h4>
-            <div className="space-y-2">
+            <h4 className="font-display font-semibold text-foreground mb-4">Contacto</h4>
+            <div className="space-y-3">
               <p className="text-muted-foreground text-sm">
-                Próximamente podrás unirte a nuestra comunidad y ser parte del desarrollo.
+                Envianos un mensaje para hacernos saber cualquier cosa que quieras.
               </p>
-              <div className="inline-block px-4 py-2 rounded-lg bg-secondary/50 border border-border text-muted-foreground text-sm">
-                Disponible pronto
+
+              <div className="flex flex-col gap-3">
+                <a
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=lyl.startup@gmail.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                >
+                  <Mail className="h-4 w-4" />
+                  lyl.startup@gmail.com
+                </a>
+
+                <a
+                  href="https://www.instagram.com/ll.startup/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                >
+                  <Instagram className="h-4 w-4" />
+                  @ll.startup
+                </a>
               </div>
+
+              <p className="text-muted-foreground text-sm">
+                
+              </p>
+
             </div>
           </div>
 
@@ -45,7 +78,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-sm">
-            © 2024 FinEco. Proyecto en desarrollo.
+            2026 L&L. Proyecto en desarrollo.
           </p>
           <div className="flex items-center gap-6">
             <span className="text-muted-foreground/60 text-xs">
