@@ -1,6 +1,6 @@
 import emailjs from "@emailjs/browser";
 import { Link as LinkIcon } from "lucide-react";
-import logo from "@/logo.jpeg";
+import logo from "@/components/layout/logo.jpeg";
 import { Textarea } from "@/components/ui/textarea";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
